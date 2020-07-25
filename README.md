@@ -24,4 +24,24 @@ Automations and policies applied from the Organization account to enforce best p
 }
 ```
 
+- SCP prevents creation of IAM users with login profies in sub-accounts. This ensures your corporate directory is the single source of truth for users with login credentials.
 
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PreventIAMUserWithLoginActions",
+            "Effect": "Deny",
+            "Action": [
+                "iam:ChangePassword",
+                "iam:CreateLoginProfile",
+                "iam:UpdateLoginProfile",
+                "iam:UpdateAccountPasswordPolicy"
+            ],
+            "Resource": [
+                "*"
+            ]
+     }]
+}
+```
