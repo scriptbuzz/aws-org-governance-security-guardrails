@@ -74,3 +74,21 @@ Automations and policies applied from the Organization account to enforce best p
             "Effect": "Deny"
 }
 ```
+- SCP to protect sub-accounts from leaving the root Organization account
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ProtectAgainstLeavingOrganization",
+            "Effect": "Deny",
+            "Action": [
+                "organizations:LeaveOrganization"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+    ]
+}
+```
