@@ -302,71 +302,14 @@ Automations and SCP policies I use frequently to apply from AWS Organization acc
   ]
 } 
 ```
--
-```
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "DenyCreateSecretWithNoProjectTag",
-      "Effect": "Deny",
-      "Action": "secretsmanager:CreateSecret",
-      "Resource": "*",
-      "Condition": {
-        "Null": {
-          "aws:RequestTag/Project": "true"
-        }
-      }
-    },
-    {
-      "Sid": "DenyRunInstanceWithNoProjectTag",
-      "Effect": "Deny",
-      "Action": "ec2:RunInstances",
-      "Resource": [
-        "arn:aws:ec2:*:*:instance/*",
-        "arn:aws:ec2:*:*:volume/*"
-      ],
-      "Condition": {
-        "Null": {
-          "aws:RequestTag/Project": "true"
-        }
-      }
-    },
-    {
-      "Sid": "DenyCreateSecretWithNoCostCenterTag",
-      "Effect": "Deny",
-      "Action": "secretsmanager:CreateSecret",
-      "Resource": "*",
-      "Condition": {
-        "Null": {
-          "aws:RequestTag/CostCenter": "true"
-        }
-      }
-    },
-    {
-      "Sid": "DenyRunInstanceWithNoCostCenterTag",
-      "Effect": "Deny",
-      "Action": "ec2:RunInstances",
-      "Resource": [
-        "arn:aws:ec2:*:*:instance/*",
-        "arn:aws:ec2:*:*:volume/*"
-      ],
-      "Condition": {
-        "Null": {
-          "aws:RequestTag/CostCenter": "true"
-        }
-      }
-    }
-  ]
-}
-```
+
 - SCP to prevent creation of root access keys in sub-accounts
 ```
 {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "GRRESTRICTROOTUSERACCESSKEYS",
+            "Sid": "Example",
             "Effect": "Deny",
             "Action": "iam:CreateAccessKey",
             "Resource": [
@@ -389,7 +332,7 @@ Automations and SCP policies I use frequently to apply from AWS Organization acc
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "GRRESTRICTROOTUSER",
+      "Sid": "Example",
       "Effect": "Deny",
       "Action": "*",
       "Resource": [
@@ -412,7 +355,7 @@ Automations and SCP policies I use frequently to apply from AWS Organization acc
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "GRRESTRICTROOTUSER",
+      "Sid": "Example",
       "Effect": "Deny",
       "Action": "*",
       "Resource": [
@@ -435,7 +378,7 @@ Automations and SCP policies I use frequently to apply from AWS Organization acc
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "GRRESTRICTS3CROSSREGIONREPLICATION",
+            "Sid": "Example",
             "Effect": "Deny",
             "Action": [
                 "s3:PutReplicationConfiguration"
@@ -446,4 +389,65 @@ Automations and SCP policies I use frequently to apply from AWS Organization acc
         }
     ]
 }
+```
+- SCP to prevent deletion of S3 objects without MFA in sub-accounts. Can be applies to mission critical S3 buckets
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Example",
+            "Effect": "Deny",
+            "Action": [
+                "s3:DeleteObject",
+                "s3:DeleteBucket"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Condition": {
+                "BoolIfExists": {
+                    "aws:MultiFactorAuthPresent": [
+                        "false"
+                    ]
+                }
+            }
+        }
+    ]
+}
+```
+- SCP pevents changes to your protected IAM roles unless the changes are performed by your admin role.
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Example",
+      "Effect": "Deny",
+      "Action": [
+        "iam:AttachRolePolicy",
+        "iam:CreateRole",
+        "iam:DeleteRole",
+        "iam:DeleteRolePermissionsBoundary",
+        "iam:DeleteRolePolicy",
+        "iam:DetachRolePolicy",
+        "iam:PutRolePermissionsBoundary",
+        "iam:PutRolePolicy",
+        "iam:UpdateAssumeRolePolicy",
+        "iam:UpdateRole",
+        "iam:UpdateRoleDescription"
+      ],
+      "Resource": [
+        "arn:aws:iam::*:role/my-role*",
+        "arn:aws:iam::*:role/some-role*"
+      ],
+      "Condition": {
+        "ArnNotLike": {
+          "aws:PrincipalARN":"arn:aws:iam::*:role/MyAdminRole"
+        }
+      }
+    }
+  ]
+}
+
 ```
