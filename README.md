@@ -6,7 +6,7 @@
 ```
     "Statement": [
         {
-            "Sid": "PreventOrgSecRoleActions",
+            "Sid": "Example",
             "Effect": "Deny",
             "Action": [
                 "*"
@@ -31,7 +31,7 @@
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "PreventIAMUserWithLoginActions",
+            "Sid": "Example",
             "Effect": "Deny",
             "Action": [
                 "iam:ChangePassword",
@@ -50,7 +50,7 @@
 
 ```
 {
-            "Sid": "ProtectCloudTrails",
+            "Sid": "Example",
             "Effect": "Deny",
             "Action": [
                 "cloudtrail:DeleteTrail",
@@ -66,7 +66,7 @@
 - SCP to prevent public access to S3 in sub-accounts
 ```
 {
-            "Sid": "PreventAllS3PublicAccess",
+            "Sid": "Example",
             "Action": [
                 "s3:PutAccountPublicAccessBlock"
             ],
@@ -80,7 +80,7 @@
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "ProtectAgainstLeavingOrganization",
+            "Sid": "Example",
             "Effect": "Deny",
             "Action": [
                 "organizations:LeaveOrganization"
@@ -200,7 +200,7 @@
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "DenyAllOutsideMyRegions",
+            "Sid": "Example",
             "Effect": "Deny",
             "NotAction": [
                "a4b:*", "artifact:*", "aws-portal:*",
@@ -237,7 +237,7 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "DenyChangesToRoleExceptByAdminRole",
+      "Sid": "Example",
       "Effect": "Deny",
       "Action": [
         "iam:AttachRolePolicy",
@@ -270,13 +270,13 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "RequireMicroInstanceType",
+      "Sid": "Example",
       "Effect": "Deny",
       "Action": "ec2:RunInstances",
       "Resource": "arn:aws:ec2:*:*:instance/*",
       "Condition": {
         "StringNotEquals":{               	
-          "ec2:InstanceType":"t2.micro"
+          "ec2:InstanceType":"t3.micro"
         }
       }
     }
@@ -290,7 +290,7 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "DenyStopAndTerminateWhenMFAIsNotPresent",
+      "Sid": "Example",
       "Effect": "Deny",
       "Action": [
         "ec2:StopInstances",
