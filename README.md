@@ -231,4 +231,38 @@ Automations and SCP policies I use frequently to apply from AWS Organization acc
     ]
 }
 ```
+- SCP prevents changes to specific protected IAM roles in sub-account, except if the changes are performed by an admin role you designate to make those changes
+```
+{    
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyChangesToRoleExceptByAdminRole",
+      "Effect": "Deny",
+      "Action": [
+        "iam:AttachRolePolicy",
+        "iam:DeleteRole",
+        "iam:DeleteRolePermissionsBoundary",
+        "iam:DeleteRolePolicy",
+        "iam:DetachRolePolicy",
+        "iam:PutRolePermissionsBoundary",
+        "iam:PutRolePolicy",
+        "iam:UpdateAssumeRolePolicy",
+        "iam:UpdateRole",
+        "iam:UpdateRoleDescription"
+      ],
+      "Resource": [
+        "arn:aws:iam::*:role/SomeProtectedRole"
+      ],
+      "Condition": {
+        "StringNotLike": {
+          "aws:PrincipalARN":"arn:aws:iam::*:role/MyAdminRole"
+        }
+      }
+    }
+  ]
+}
+
+
+```
 
