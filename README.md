@@ -45,3 +45,21 @@ Automations and policies applied from the Organization account to enforce best p
      }]
 }
 ```
+
+- SCP to protect CloudTrails in sub-accounts from being tampered with.
+
+```
+{
+            "Sid": "ProtectCloudTrails",
+            "Effect": "Deny",
+            "Action": [
+                "cloudtrail:DeleteTrail",
+                "cloudtrail:StopLogging",
+		        "cloudtrail:PutEventSelectors",
+                "cloudtrail:UpdateTrail"
+            ],
+            "Resource": [
+                "arn:aws:cloudtrail:*:*:trail/somecloudtrail"
+            ]
+}
+```
