@@ -1,5 +1,5 @@
 # org-governance
-Automations and SCP policies I use frequently to apply from AWS Organization account to enforce best practices in sub-accounts
+ SCP policies I use frequently to apply from AWS Organization account to enforce best practices in sub-accounts. 
 
 - SCP prevents actions against any role starting with OrgSec in sub-accounts
 
