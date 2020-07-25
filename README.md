@@ -263,6 +263,44 @@ Automations and SCP policies I use frequently to apply from AWS Organization acc
   ]
 }
 
+```
+- SCP enforces EC2 instance type in sub-accounts. This could be applied to sandbox accounts to control costs.
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "RequireMicroInstanceType",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:ec2:*:*:instance/*",
+      "Condition": {
+        "StringNotEquals":{               	
+          "ec2:InstanceType":"t2.micro"
+        }
+      }
+    }
+  ]
+} 
 
 ```
+- SCP to prevent stopping EC2 instaces without MFA authintication. This can be applied to production accounts with critical workloads.
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyStopAndTerminateWhenMFAIsNotPresent",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:StopInstances",
+        "ec2:TerminateInstances"
+      ],
+      "Resource": "*",
+      "Condition": {"BoolIfExists": {"aws:MultiFactorAuthPresent": false}}
+    }
+  ]
+} 
 
+
+```
