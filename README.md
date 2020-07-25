@@ -301,6 +301,149 @@ Automations and SCP policies I use frequently to apply from AWS Organization acc
     }
   ]
 } 
-
-
+```
+-
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyCreateSecretWithNoProjectTag",
+      "Effect": "Deny",
+      "Action": "secretsmanager:CreateSecret",
+      "Resource": "*",
+      "Condition": {
+        "Null": {
+          "aws:RequestTag/Project": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRunInstanceWithNoProjectTag",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "Null": {
+          "aws:RequestTag/Project": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCreateSecretWithNoCostCenterTag",
+      "Effect": "Deny",
+      "Action": "secretsmanager:CreateSecret",
+      "Resource": "*",
+      "Condition": {
+        "Null": {
+          "aws:RequestTag/CostCenter": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRunInstanceWithNoCostCenterTag",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "Null": {
+          "aws:RequestTag/CostCenter": "true"
+        }
+      }
+    }
+  ]
+}
+```
+- SCP to prevent creation of root access keys in sub-accounts
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "GRRESTRICTROOTUSERACCESSKEYS",
+            "Effect": "Deny",
+            "Action": "iam:CreateAccessKey",
+            "Resource": [
+                "*"
+            ],
+            "Condition": {
+                "StringLike": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:root"
+                    ]
+                }
+            }
+        }
+    ]
+}
+```
+- SCP to prevent creation of root users in sub-accounts
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "GRRESTRICTROOTUSER",
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalArn": [
+            "arn:aws:iam::*:root"
+          ]
+        }
+      }
+    }
+  ]
+}
+```
+- SCP to prevent actions from root user in sub-accounts
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "GRRESTRICTROOTUSER",
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalArn": [
+            "arn:aws:iam::*:root"
+          ]
+        }
+      }
+    }
+  ]
+}
+```
+- SCP to prevent cross-region S3 replication if, for example, compliance requirements do not permit S3 data leaving your default region.
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "GRRESTRICTS3CROSSREGIONREPLICATION",
+            "Effect": "Deny",
+            "Action": [
+                "s3:PutReplicationConfiguration"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+    ]
+}
 ```
