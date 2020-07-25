@@ -55,11 +55,22 @@ Automations and policies applied from the Organization account to enforce best p
             "Action": [
                 "cloudtrail:DeleteTrail",
                 "cloudtrail:StopLogging",
-		        "cloudtrail:PutEventSelectors",
+		"cloudtrail:PutEventSelectors",
                 "cloudtrail:UpdateTrail"
             ],
             "Resource": [
                 "arn:aws:cloudtrail:*:*:trail/somecloudtrail"
             ]
+}
+```
+- SCP to prevent public access to S3 in sub-accounts
+```
+{
+            "Sid": "PreventAllS3PublicAccess",
+            "Action": [
+                "s3:PutAccountPublicAccessBlock"
+            ],
+            "Resource": "*",
+            "Effect": "Deny"
 }
 ```
