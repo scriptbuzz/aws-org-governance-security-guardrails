@@ -4,6 +4,8 @@
 - SCP prevents actions against any role starting with OrgSec in sub-accounts
 
 ```
+{
+    "Version": "2012-10-17",
     "Statement": [
         {
             "Sid": "Example",
